@@ -1,27 +1,26 @@
-from django.test import TestCase
-from rest_framework.test import APITestCase
-from django.contrib.auth.models import User
 from django.urls import reverse
-from rest_framework import status
+from rest_framework.test import APITestCase
 from .models import Event
-
-
-# Create your tests here.
+from rest_framework import status
 
 
 class EventTests(APITestCase):
 
     def setUp(self):
-        self.user = User(username='testuser', password='password')
-        self.client.login(username='testuser', password='password')
+        self.event = Event.objects.create(
+            title="Old Title", description="Old Description")
+        self.url = reverse('update_events', args=[self.event.pk])
 
-        self.event_1 = Event.objects.create(
-            title='Event 1', description='Description 1', date='2024-12-12', location='Location 1', organizer=self.user)
-        self.event_2 = Event.objects.create(
-            title='Event 2', description='Description 2', date='2024-12-13', location='Location 2', organizer=self.user)
+        self.assertEqual(self.event.title, 'Old Title')
+        self.assertEqual(self.event.description, 'Old Description')
 
-    def test_lists_event(self):
-        url = reverse('list_events')
-        response = self.client.get(url)
+    def test_update_event_with_valid_data(self):
+        data = {'title': 'Test Title', 'description': 'Test Description'}
+
+        response = self.client.patch(self.url, data, format='json')
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)  # Проверяем, что два события
+        self.event.refresh_from_db()
+
+        self.assertEqual(self.event.title, 'Test Title')
+        self.assertEqual(self.event.description, 'Test Description')
