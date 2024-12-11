@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Event
 from .serializers import EventSerializer
+from rest_framework.permissions import IsAuthenticated
+
 
 # Create your views here.
 
@@ -13,8 +15,11 @@ class EventCreate(APIView):
     API View для создания нового события.
     """
 
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, format=None):
-        serializer = EventSerializer(data=request.data)
+        request.data['organizer'] = request.user.id
+        serializer = EventSerializer(data=request.data, context={'request': request})
 
         if serializer.is_valid():
             serializer.save()
@@ -32,19 +37,16 @@ class EventUpdate(APIView):
         try:
             event = Event.objects.get(pk=pk)
         except Event.DoesNotExist:
-            return Response(
-                {"detail": "Event not found by id"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "Event not found by id"}, status=status.HTTP_400_BAD_REQUES)
+
+        if event.organizer != request.user:
+            return Response({"detail": "You do not have permission to edit this event"}, status=status.HTTP_403_FORBIDDEN)
 
         title = request.data.get('title')
         description = request.data.get('description')
 
         if not title and not description:
-            return Response(
-                {"detail": "Missing required title/description"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"detail": "Missing required title/description"}, status=status.HTTP_400_BAD_REQUEST)
 
         if title:
             event.title = title
@@ -79,13 +81,13 @@ class EventDelete(APIView):
             event = Event.objects.get(pk=pk)
         except Event.DoesNotExist:
             return Response(
-                {"detail": "Event not found by id"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+                {"detail": "Event not found by id"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if event.organizer != request.user:
+            return Response(
+                {"detail": "You do not have permission to edit this event"}, status=status.HTTP_403_FORBIDDEN)
 
         event.delete()
 
         return Response(
-            {"detail": "Event deleted successfully"},
-            status=status.HTTP_204_NO_CONTENT
-        )
+            {"detail": "Event deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
