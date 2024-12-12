@@ -5,5 +5,4 @@
 *.db
 *.sqlite3
 *.log
-*.vscode
 venv/
