@@ -3,23 +3,21 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Event
-from .serializers import EventSerializer
+from .serializers import EventSerializer, EventRegisterSerializer
 from rest_framework.permissions import IsAuthenticated
-
+from .utils import get_event_or_404
 
 # Create your views here.
 
 
 class EventCreate(APIView):
-    """
-    API View для создания нового события.
-    """
 
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         request.data['organizer'] = request.user.id
-        serializer = EventSerializer(data=request.data, context={'request': request})
+        serializer = EventSerializer(
+            data=request.data, context={'request': request})
 
         if serializer.is_valid():
             serializer.save()
@@ -29,15 +27,9 @@ class EventCreate(APIView):
 
 
 class EventUpdate(APIView):
-    """
-    API View для обновления существующего события.
-    """
 
     def patch(self, request, pk, format=None):
-        try:
-            event = Event.objects.get(pk=pk)
-        except Event.DoesNotExist:
-            return Response({"detail": "Event not found by id"}, status=status.HTTP_400_BAD_REQUES)
+        event = get_event_or_404(pk)
 
         if event.organizer != request.user:
             return Response({"detail": "You do not have permission to edit this event"}, status=status.HTTP_403_FORBIDDEN)
@@ -60,10 +52,7 @@ class EventUpdate(APIView):
         return Response(serializer.data)
 
 
-class ListEvents(APIView):
-    """
-    API View для получения списка всех событий.
-    """
+class EventList(APIView):
 
     def get(self, request, format=None):
         events = Event.objects.all()
@@ -71,17 +60,16 @@ class ListEvents(APIView):
         return Response(serializer.data)
 
 
-class EventDelete(APIView):
-    """
-    API View для удаления существующего события.
-    """
+class EventSingle(APIView):
+    def get(self, request, pk):
+        event = get_event_or_404(pk)
+        serializer = EventSerializer(event)
+        return Response(serializer.data)
 
+
+class EventDelete(APIView):
     def delete(self, request, pk, format=None):
-        try:
-            event = Event.objects.get(pk=pk)
-        except Event.DoesNotExist:
-            return Response(
-                {"detail": "Event not found by id"}, status=status.HTTP_400_BAD_REQUEST)
+        event = get_event_or_404(pk)
 
         if event.organizer != request.user:
             return Response(
@@ -91,3 +79,19 @@ class EventDelete(APIView):
 
         return Response(
             {"detail": "Event deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class EventRegister(APIView):
+    def post(self, request, pk):
+        try:
+            event = Event.objects.get(pk=pk)
+        except Event.DoesNotExist:
+            return Response(
+                {"detail": "Event not found by id"}, status=status.HTTP_400_BAD_REQUEST)
+        user = request.user  # get current user
+        if user in event.registered_users.all():
+            return Response({"detail": "You are already registered for this event."}, status.HTTP_400_BAD_REQUEST)
+        event.registered_users.add(user)
+        serializer = EventRegisterSerializer(event)
+        return Response({"detail": "Successfully registered for the event.",
+                         "Users which already registered": serializer.data}, status.HTTP_200_OK)
