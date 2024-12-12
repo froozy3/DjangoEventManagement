@@ -13,10 +13,6 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
-        return response
-
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
