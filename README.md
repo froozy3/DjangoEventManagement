@@ -1,4 +1,4 @@
-
+API realized bonus points: implement like filtering and send emails to users upon event registration.
 ### Installation
 
 1. Clone the repository:
