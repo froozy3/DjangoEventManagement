@@ -5,14 +5,12 @@ from rest_framework import status
 from .models import Event
 from .serializers import EventSerializer, EventRegisterSerializer
 from rest_framework.permissions import IsAuthenticated
-from .utils import get_event_or_404
+from .utils import get_event_or_404, sending_email
 
 # Create your views here.
 
 
 class EventCreate(APIView):
-
-    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         request.data['organizer'] = request.user.id
@@ -61,6 +59,7 @@ class EventList(APIView):
 
 
 class EventSingle(APIView):
+
     def get(self, request, pk):
         event = get_event_or_404(pk)
         serializer = EventSerializer(event)
@@ -68,6 +67,7 @@ class EventSingle(APIView):
 
 
 class EventDelete(APIView):
+
     def delete(self, request, pk, format=None):
         event = get_event_or_404(pk)
 
@@ -83,15 +83,17 @@ class EventDelete(APIView):
 
 class EventRegister(APIView):
     def post(self, request, pk):
-        try:
-            event = Event.objects.get(pk=pk)
-        except Event.DoesNotExist:
-            return Response(
-                {"detail": "Event not found by id"}, status=status.HTTP_400_BAD_REQUEST)
+        event = get_event_or_404(pk=pk)
+
         user = request.user  # get current user
+
         if user in event.registered_users.all():
             return Response({"detail": "You are already registered for this event."}, status.HTTP_400_BAD_REQUEST)
+
         event.registered_users.add(user)
+        sending_email(user, event)
+
         serializer = EventRegisterSerializer(event)
+
         return Response({"detail": "Successfully registered for the event.",
                          "Users which already registered": serializer.data}, status.HTTP_200_OK)
