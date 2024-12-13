@@ -6,4 +6,5 @@
 *.sqlite3
 *.log
 *.env
+*.vscode
 venv/

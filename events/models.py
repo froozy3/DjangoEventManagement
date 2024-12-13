@@ -8,7 +8,7 @@ class Event(models.Model):
 
     title = models.CharField(max_length=255)
     description = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
     location = models.CharField(max_length=255)
     organizer = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
