@@ -32,7 +32,17 @@ API realized bonus points: implement like filtering and send emails to users upo
    python manage.py migrate
    ```
 
-6. Create a `.env` file and fill in fields such as `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, and other settings (default values are provided, but you should enter your own data).
+6. Setting Up Email Sending for Event Registration
+   To enable the email-sending functionality upon event registration, you need to:
+	1.	Create a .env file in the root directory of your project.
+	2.	Add the following fields with your email configuration:
+   ```bash
+   EMAIL_HOST_USER=your_email@example.com
+   EMAIL_HOST_PASSWORD=your_password
+   EMAIL_HOST=smtp.example.com
+   EMAIL_PORT=587
+ 
+   Default values are provided in the project, but it is recommended to replace them with your own credentials for security and functionality.
 
 7. Start the development server:
    ```bash
