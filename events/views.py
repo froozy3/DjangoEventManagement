@@ -36,16 +36,16 @@ class EventUpdateView(APIView):
             return Response({"detail": "You do not have permission to edit this event"}, status=status.HTTP_403_FORBIDDEN)
 
         title = request.data.get('title')
-        description = request.data.get('description')
+        date = request.data.get('date')
 
-        if not title and not description:
-            return Response({"detail": "Missing required title/description"}, status=status.HTTP_400_BAD_REQUEST)
+        if not title and not date:
+            return Response({"detail": "Missing required title/description/date"}, status=status.HTTP_400_BAD_REQUEST)
 
         if title:
             event.title = title
 
-        if description:
-            event.description = description
+        if date:
+            event.date = date
 
         event.save()
         serializer = EventSerializer(event)
