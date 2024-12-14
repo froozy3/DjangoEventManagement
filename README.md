@@ -52,4 +52,4 @@
    ```
 # Bonus Points: Features
    * **Filtering**: Add functionality to filter events (`api/events/?title=python&location=online`).
-   * **Email Notifications**: Send email notifications to users upon event registration. Insert your own settings in the Docker file.
+   * **Email Notifications**: Send email notifications to users upon event registration. Create and insert your own settings in the .env file.
