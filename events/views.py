@@ -42,7 +42,7 @@ class EventUpdateView(APIView):
             return Response({"detail": "Missing required title/description/date"}, status=status.HTTP_400_BAD_REQUEST)
 
         if title:
-            event.title = title
+            event.title = title 
 
         if date:
             event.date = date
@@ -64,23 +64,13 @@ class EventListView(APIView):
 
         events = Event.objects.all()
 
-        if title:
-            events = events.filter(title__icontains=title)
-
-        if location:
-            events = events.filter(location__icontains=location)
-
-        if date_from:
-            date_from = parse_datetime(date_from)
-            events = events.filter(date__gte=date_from)
-
-        if date_to:
-            date_to = parse_datetime(date_to)
-            events = events.filter(date__lte=date_to)
-
-        if organizer:
-            events = events.filter(organizer__username__icontains=organizer)
-
+        events = events.filter(title__icontains=title) if title else events
+        events = events.filter(location__icontains=location) if location else events
+        events = events.filter(organizer__username__icontains=organizer) if organizer else events
+        events = events.filter(date__gte=parse_datetime(date_from)) if date_from else events
+        events = events.filter(date__lte=parse_datetime(date_to)) if date_to else events
+        
+        
         serializer = EventSerializer(events, many=True)
 
         return Response(serializer.data)
