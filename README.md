@@ -51,5 +51,5 @@
    docker run -p 8000:8000 django-event-management
    ```
 # Bonus Points: Features
-   * Like Filtering: Add functionality to filter events based on likes.
-   * Email Notifications: Send email notifications to users upon event registration.
+   * **Filtering**: Add functionality to filter events (`api/events/?title=python&location=online`).
+   * **Email Notifications**: Send email notifications to users upon event registration. Insert your own settings in the Docker file.
