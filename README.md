@@ -1,63 +1,55 @@
-API realized bonus points: implement like filtering and send emails to users upon event registration.
+### API Documentation
+
+
+## 1. API Endpoints
+
+- **Create Event**: `api/events/create/` (POST)
+- **Update Event**: `api/events/update/{id}` (PATCH)
+- **Delete Event**: `api/events/delete/{id}` (DELETE)
+- **List Events**: `api/events/` (GET)
+- **Single Event**: `api/events/{id}` (GET)
+- **Registration**: `auth/register/` (POST)
+- **Login**: `auth/token/` (POST)
+- **Logout**: `auth/logout/` (POST)
+
+   **Request Body**: 
+    ```json
+    {
+      "title":"Conference Python Devoloper",
+      "description":"A conference for Python developers to share knowledge and network.",
+      "location":"Online, Zoom",
+      "date": "2024-12-25T12:00:00Z"
+    }
+
+- **Response**:
+   ```json
+   {
+      
+    "id": 1,
+    "title": "Conference Python Devoloper",
+    "description": "A conference for Python developers to share knowledge and network.",
+    "date": "2024-12-25T12:00:00Z",
+    "location": "Online, Zoom",
+    "organizer": 1,
+    "registered_users": []
+
+   }
+
 ### Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/froozy3/DjangoEventManagement.git
    ```
-
-2. Create a virtual environment:
+2. Create docker image:
    ```bash
-   python -m venv venv
+   docker build -t django-event-management .
    ```
 
-3. Activate the virtual environment:
-   - On Windows:
-     ```bash
-     venv\Scripts\Activate
-     ```
-   - On macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
-
-4. Install dependencies:
+2. Run the docker container
    ```bash
-   pip install -r requirements.txt
+   docker run -p 8000:8000 django-event-management
    ```
-
-5. Run database migrations:
-   ```bash
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
-
-6. Setting Up Email Sending for Event Registration
-   To enable the email-sending functionality upon event registration, you need to:
-	1.	Create a .env file in the root directory of your project.
-	2.	Add the following fields with your email configuration:
-   ```bash
-   EMAIL_HOST_USER=your_email@example.com
-   EMAIL_HOST_PASSWORD=your_password
-   EMAIL_HOST=smtp.example.com
-   EMAIL_PORT=587
- 
-   Default values are provided in the project, but it is recommended to replace them with your own credentials for security and functionality.
-
-7. Start the development server:
-   ```bash
-   python manage.py runserver
-   ```
-
-8. Access the app at [http://localhost:8000](http://localhost:8000).
-
-### Docker (Optional)
-
-If you prefer to use Docker:
-
-1. Build and run the Docker container:
-   ```bash
-   docker-compose up --build
-   ```
-
-2. Access the app at [http://localhost:8000](http://localhost:8000).
+# Bonus Points: Features
+   * Like Filtering: Add functionality to filter events based on likes.
+   * Email Notifications: Send email notifications to users upon event registration.
