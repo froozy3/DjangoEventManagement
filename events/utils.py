@@ -1,6 +1,7 @@
 from django.http import Http404
 from .models import Event
 from django.core.mail import send_mail
+from django.utils.timezone import now, timedelta
 
 
 def get_event_or_404(pk):
