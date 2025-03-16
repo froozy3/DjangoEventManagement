@@ -13,6 +13,8 @@
       "date": "2024-12-25T12:00:00Z"
     }
 - **Update Event**: `api/events/update/{id}` (PATCH)
+-  **Request Body**: 
+    ```json
     {
       "title":"Conference Java Devoloper",
       "description":"A conference for Java developers to share knowledge and network.",
@@ -32,6 +34,8 @@
    }
   
 - **Login**: `auth/token/` (POST)
+- -  **Request Body**: 
+    ```json
    {
     "username":"test_user",
     "password": "test_user"
