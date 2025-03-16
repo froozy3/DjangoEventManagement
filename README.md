@@ -51,19 +51,12 @@
       "date": "2024-12-25T12:00:00Z"
     }
 
-- **Response**:
-   ```json
-   {
-      
-    "id": 1,
-    "title": "Conference Python Devoloper",
-    "description": "A conference for Python developers to share knowledge and network.",
-    "date": "2024-12-25T12:00:00Z",
-    "location": "Online, Zoom",
-    "organizer": 1,
-    "registered_users": []
 
-   }
+- **Register on event**: `api/ events/register/{id}` (POST)
+- *Create and insert your own settings in the .env file.
+  EMAIL_HOST_USER='your-email@gmail.com'
+  EMAIL_HOST_PASSWORD='your-email-password'*
+     
 
 ### Installation
 
@@ -80,6 +73,5 @@
    ```bash
    docker run -p 8000:8000 django-event-management
    ```
-# Bonus Points: Features
-   * **Filtering**: Add functionality to filter events (`api/events/?title=python&location=online`).
-   * **Email Notifications**: Send email notifications to users upon event registration. Create and insert your own settings in the .env file.
+
+
