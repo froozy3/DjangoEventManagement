@@ -1,15 +1,18 @@
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from rest_framework import permissions
+
+from events.views import EventRegisterView, EventViewSet, RatingView
 
 
-from .views import *
-
+router = DefaultRouter()
+router.register("events", EventViewSet)
 
 urlpatterns = [
-    path('events/', EventListView.as_view(), name='list_event'),
-    path('events/<int:pk>/', EventSingleView.as_view(), name='single_event'),
-    path('events/update/<int:pk>/', EventUpdateView.as_view(), name='update_event'),
-    path('events/create/', EventCreateView.as_view(), name='create_event'),
-    path('events/delete/<int:pk>/', EventDeleteView.as_view(), name='delete_event'),
-    path('events/register/<int:pk>/',EventRegisterView.as_view(), name='register_event'),
-    path('events/rate/<int:event_id>/', AddRatingView.as_view(),name='add_rating')
+    path("", include(router.urls)),
+    path("events/rating/<int:event_id>/", RatingView.as_view(), name="rating"),
+    path(
+        "events/register/<int:event_id>/", EventRegisterView.as_view(), name="register"
+    ),
 ]
