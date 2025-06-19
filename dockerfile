@@ -1,8 +1,8 @@
 FROM python:3.11-slim
 
-WORKDIR /app
+WORKDIR /EventManagment
 
-COPY . /app/
+COPY . /EventManagment/
 
 RUN pip install --no-cache-dir -r requirements.txt
 
